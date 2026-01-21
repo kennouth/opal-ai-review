@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opal Engineering AI-Readiness Assessment</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: #161b22;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --green: #3fb950;
+            --yellow: #d29922;
+            --red: #f85149;
+            --purple: #a371f7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-badge {
+            display: inline-block;
+            font-size: 3rem;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 2px solid var(--green);
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .score-badge span {
+            color: var(--green);
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 2.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.75rem;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--card-bg);
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        td {
+            color: var(--text-muted);
+        }
+
+        tr:hover td {
+            background: var(--card-bg);
+        }
+
+        ul, ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .tag-green {
+            background: rgba(63, 185, 80, 0.2);
+            color: var(--green);
+        }
+
+        .tag-yellow {
+            background: rgba(210, 153, 34, 0.2);
+            color: var(--yellow);
+        }
+
+        .tag-red {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--red);
+        }
+
+        .tag-purple {
+            background: rgba(163, 113, 247, 0.2);
+            color: var(--purple);
+        }
+
+        .bottleneck {
+            border-left: 3px solid var(--red);
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+
+        .recommendation {
+            border-left: 3px solid var(--green);
+            padding-left: 1rem;
+            margin: 1rem 0;
+        }
+
+        .highlight {
+            background: rgba(88, 166, 255, 0.1);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .metric-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .score-badge {
+                font-size: 2rem;
+            }
+            table {
+                font-size: 0.8rem;
+            }
+            th, td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Opal Engineering AI-Readiness Assessment</h1>
+            <div class="score-badge"><span>7</span>/10</div>
+            <p class="subtitle">Strong foundation, but significant opportunities to increase velocity.</p>
+            <p class="date">Generated January 21, 2026</p>
+        </header>
+
+        <section>
+            <h2>Executive Summary</h2>
+            <p>Opal's iOS team has <strong>above-average AI-readiness</strong> compared to typical startups. You already have:</p>
+            <ul>
+                <li>A comprehensive <code>CLAUDE.md</code> with coding standards, architecture docs, and anti-patterns</li>
+                <li>89% of PRs have detailed descriptions</li>
+                <li>Modular Swift package architecture (40+ packages)</li>
+                <li>Consistent coding style enforced by SwiftLint/SwiftFormat</li>
+            </ul>
+            <p>However, there are <strong>clear bottlenecks</strong> limiting velocity and <strong>gaps in AI adoption</strong> that, if addressed, could significantly accelerate output.</p>
+        </section>
+
+        <section>
+            <h2>Key Metrics</h2>
+            <div class="grid">
+                <div class="metric-card">
+                    <div class="metric-value">300</div>
+                    <div class="metric-label">PRs (last 5 months)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">3.8d</div>
+                    <div class="metric-label">Avg PR cycle time</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">89%</div>
+                    <div class="metric-label">PRs with detailed descriptions</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">7</div>
+                    <div class="metric-label">Active iOS contributors</div>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Assessment</th>
+                </tr>
+                <tr>
+                    <td>PRs with structured sections</td>
+                    <td>81%</td>
+                    <td><span class="tag tag-green">Excellent</span></td>
+                </tr>
+                <tr>
+                    <td>Active Android contributors</td>
+                    <td>2</td>
+                    <td><span class="tag tag-red">Very concentrated</span></td>
+                </tr>
+                <tr>
+                    <td>AI context files present</td>
+                    <td>Yes (.claude, CLAUDE.md)</td>
+                    <td><span class="tag tag-green">Ahead of most teams</span></td>
+                </tr>
+                <tr>
+                    <td>CI/CD workflows</td>
+                    <td>2 (lint, localization)</td>
+                    <td><span class="tag tag-yellow">Minimal</span></td>
+                </tr>
+                <tr>
+                    <td>Test infrastructure</td>
+                    <td>Limited</td>
+                    <td><span class="tag tag-red">Gap</span></td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Top 3 Bottlenecks</h2>
+
+            <div class="bottleneck">
+                <h3>1. Review Concentration / Implicit Review Process</h3>
+                <p>No visible required reviewers or branch protection. PRs appear to merge without formal review gates.</p>
+                <p><strong>Risk:</strong> Quality inconsistency, knowledge silos</p>
+                <p><strong>AI Impact:</strong> AI can't help with reviews if there's no structured review process</p>
+            </div>
+
+            <div class="bottleneck">
+                <h3>2. Android Team Understaffed</h3>
+                <p>Only 2 contributors (thomsala: 75 PRs, valentin: 25 PRs). No <code>.claude</code> or AI context files in Android repo.</p>
+                <p><strong>Risk:</strong> Bus factor of 1-2, slower feature parity</p>
+                <p><strong>AI Impact:</strong> Android is the biggest opportunity for AI-assisted acceleration</p>
+            </div>
+
+            <div class="bottleneck">
+                <h3>3. ScreentimeKit Complexity</h3>
+                <p>Core library with reliability issues. Limited test infrastructure for integration testing. Only 50 PRs across 5 contributors.</p>
+                <p><strong>Risk:</strong> Regressions in critical path, debugging difficulty</p>
+                <p><strong>AI Impact:</strong> AI can help write tests, but needs better context</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Contributor Analysis</h2>
+
+            <h3>iOS Team</h3>
+            <table>
+                <tr>
+                    <th>Contributor</th>
+                    <th>PRs (5mo)</th>
+                    <th>Cycle Time</th>
+                    <th>Desc Quality</th>
+                    <th>Assessment</th>
+                </tr>
+                <tr>
+                    <td><strong>skiezest</strong></td>
+                    <td>62</td>
+                    <td>3.4 days</td>
+                    <td>93%</td>
+                    <td>Top velocity, consistent quality</td>
+                </tr>
+                <tr>
+                    <td><strong>thibaudse</strong></td>
+                    <td>50</td>
+                    <td>4.2 days</td>
+                    <td>90%</td>
+                    <td>Strong contributor, good docs</td>
+                </tr>
+                <tr>
+                    <td><strong>juliensagot</strong></td>
+                    <td>47</td>
+                    <td>4.3 days</td>
+                    <td>89%</td>
+                    <td>Solid, creates AI skills</td>
+                </tr>
+                <tr>
+                    <td><strong>lilpit</strong></td>
+                    <td>44</td>
+                    <td>5.8 days</td>
+                    <td>97%</td>
+                    <td>Best documentation, longer cycles</td>
+                </tr>
+                <tr>
+                    <td><strong>pauze</strong></td>
+                    <td>36</td>
+                    <td>3.0 days</td>
+                    <td>83%</td>
+                    <td>Fast cycles, ScreentimeKit focus</td>
+                </tr>
+                <tr>
+                    <td><strong>treeba</strong></td>
+                    <td>30</td>
+                    <td>3.2 days</td>
+                    <td>66%</td>
+                    <td><span class="tag tag-yellow">Fast but less documented</span></td>
+                </tr>
+                <tr>
+                    <td><strong>konroj</strong></td>
+                    <td>27</td>
+                    <td>1.7 days</td>
+                    <td>100%</td>
+                    <td><span class="tag tag-green">Model contributor</span></td>
+                </tr>
+            </table>
+
+            <div class="highlight">
+                <strong>Key Insight:</strong> konroj has the fastest cycle times AND best documentation — model for others. treeba ships fast but 16% of PRs have no description — AI context gap.
+            </div>
+
+            <h3>Android Team</h3>
+            <table>
+                <tr>
+                    <th>Contributor</th>
+                    <th>PRs</th>
+                    <th>Assessment</th>
+                </tr>
+                <tr>
+                    <td><strong>thomsala</strong></td>
+                    <td>75</td>
+                    <td><span class="tag tag-red">Carrying Android solo</span></td>
+                </tr>
+                <tr>
+                    <td><strong>valentin-starrydot</strong></td>
+                    <td>25</td>
+                    <td>Supporting role</td>
+                </tr>
+            </table>
+            <p><strong>Critical:</strong> Android has no AI context files. This is your biggest leverage opportunity.</p>
+        </section>
+
+        <section>
+            <h2>What's Working (Keep Doing)</h2>
+            <div class="card">
+                <ol>
+                    <li><strong>CLAUDE.md is excellent</strong> — Comprehensive architecture docs, coding standards, anti-patterns, and explicit guidelines. Better than 90% of teams.</li>
+                    <li><strong>Modular package architecture</strong> — 40+ Swift packages means AI can understand and modify isolated components.</li>
+                    <li><strong>PR description culture</strong> — 89% detailed descriptions means PRs are self-documenting.</li>
+                    <li><strong>juliensagot creating AI skills</strong> — Team is actively building AI tooling.</li>
+                    <li><strong>"Explicit over implicit" principle</strong> — Your #1 coding principle directly enables better AI assistance.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2>Recommendations</h2>
+
+            <h3>Quick Wins (This Week)</h3>
+            <table>
+                <tr>
+                    <th>Action</th>
+                    <th>Owner</th>
+                    <th>Impact</th>
+                </tr>
+                <tr>
+                    <td>Add CLAUDE.md to opal-android</td>
+                    <td>thomsala</td>
+                    <td><span class="tag tag-green">High</span> — unlocks AI for understaffed team</td>
+                </tr>
+                <tr>
+                    <td>Add CLAUDE.md to ScreentimeKit</td>
+                    <td>pauze</td>
+                    <td><span class="tag tag-green">High</span> — critical library needs AI context</td>
+                </tr>
+                <tr>
+                    <td>Enforce PR template</td>
+                    <td>Team lead</td>
+                    <td><span class="tag tag-yellow">Medium</span> — standardize ## Summary, ## Test Plan</td>
+                </tr>
+                <tr>
+                    <td>Add @claude mention in code reviews</td>
+                    <td>All</td>
+                    <td><span class="tag tag-yellow">Medium</span> — start using AI for review assistance</td>
+                </tr>
+            </table>
+
+            <h3>Medium-Term (This Quarter)</h3>
+            <table>
+                <tr>
+                    <th>Action</th>
+                    <th>Impact</th>
+                    <th>Effort</th>
+                </tr>
+                <tr>
+                    <td>Set up required reviewers / branch protection</td>
+                    <td>Enables AI-assisted review workflows</td>
+                    <td><span class="tag tag-green">Low</span></td>
+                </tr>
+                <tr>
+                    <td>Add CI workflow for tests</td>
+                    <td>Tests enable AI to validate changes</td>
+                    <td><span class="tag tag-yellow">Medium</span></td>
+                </tr>
+                <tr>
+                    <td>Create ScreentimeKit integration test infrastructure</td>
+                    <td>AI can help write tests once infra exists</td>
+                    <td><span class="tag tag-yellow">Medium</span></td>
+                </tr>
+                <tr>
+                    <td>Build AI-powered PR summary bot</td>
+                    <td>Auto-generate for the 11% without descriptions</td>
+                    <td><span class="tag tag-green">Low</span></td>
+                </tr>
+            </table>
+
+            <h3>Cultural/Process Changes</h3>
+            <div class="card">
+                <ul>
+                    <li><strong>Mandate "AI-first" for boilerplate</strong> — Tests, documentation, PR descriptions should be AI-assisted by default</li>
+                    <li><strong>Weekly AI tool sharing</strong> — 5-min standup: "what AI trick saved you time this week?"</li>
+                    <li><strong>treeba documentation coaching</strong> — 16% no-description rate is the outlier</li>
+                    <li><strong>Android parity investment</strong> — 2-person team can't keep up; AI + hiring needed</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Per-Contributor AI Recommendations</h2>
+            <table>
+                <tr>
+                    <th>Contributor</th>
+                    <th>Recommendation</th>
+                </tr>
+                <tr>
+                    <td><strong>skiezest</strong></td>
+                    <td>Already high velocity. Use AI for test generation to maintain quality at speed.</td>
+                </tr>
+                <tr>
+                    <td><strong>thibaudse</strong></td>
+                    <td>Strong on reonboarding. Use AI to document edge cases discovered.</td>
+                </tr>
+                <tr>
+                    <td><strong>juliensagot</strong></td>
+                    <td>Already creating AI skills — empower as AI tooling lead.</td>
+                </tr>
+                <tr>
+                    <td><strong>lilpit</strong></td>
+                    <td>Excellent docs but longer cycles. Use AI for first-pass code review.</td>
+                </tr>
+                <tr>
+                    <td><strong>pauze</strong></td>
+                    <td>ScreentimeKit expert. Priority: create detailed CLAUDE.md for ScreentimeKit.</td>
+                </tr>
+                <tr>
+                    <td><strong>treeba</strong></td>
+                    <td>Fast but under-documented. Require AI-generated PR summaries before merge.</td>
+                </tr>
+                <tr>
+                    <td><strong>konroj</strong></td>
+                    <td>Model contributor. Have them document their workflow for the team.</td>
+                </tr>
+                <tr>
+                    <td><strong>thomsala</strong></td>
+                    <td><span class="tag tag-purple">Highest priority</span> — Add CLAUDE.md + Cursor rules immediately.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Expected Impact</h2>
+            <div class="highlight">
+                <p><strong>If you implement these recommendations, I estimate 20-40% velocity increase is achievable within one quarter</strong>, primarily from:</p>
+                <ul>
+                    <li>AI-assisted Android development (currently bottlenecked)</li>
+                    <li>AI-generated tests for ScreentimeKit</li>
+                    <li>AI-assisted PR reviews reducing cycle times</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Risks & Concerns</h2>
+            <div class="card">
+                <ol>
+                    <li><strong>No visible test coverage</strong> — AI-generated code without tests is risky. Invest in test infra before scaling AI usage.</li>
+                    <li><strong>ScreentimeKit reliability</strong> — Per Slack discussions, this is fragile. AI can help, but only with better documentation.</li>
+                    <li><strong>Review process unclear</strong> — If PRs merge without review, AI-assisted changes could introduce issues undetected.</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>Analysis generated by Claude | Data from GitHub API | January 2026</p>
+            <p>Repositories analyzed: opal-ios, opal-android, ScreentimeKit, firebase-deploy</p>
+        </footer>
+    </div>
+</body>
+</html>
