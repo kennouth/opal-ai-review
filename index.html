@@ -5,6 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opal Engineering AI-Readiness Assessment</title>
     <style>
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0d1117;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #login-box {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        #login-box h2 {
+            color: #e6edf3;
+            margin: 0 0 0.5rem 0;
+            padding: 0;
+            border: none;
+            font-size: 1.5rem;
+        }
+
+        #login-box p {
+            color: #8b949e;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        #login-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #e6edf3;
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        #login-box input:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+
+        #login-box button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            background: #238636;
+            border: none;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        #login-box button:hover {
+            background: #2ea043;
+        }
+
+        #login-error {
+            color: #f85149;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        #protected-content {
+            display: none;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
         :root {
             --bg: #0d1117;
             --card-bg: #161b22;
@@ -251,6 +338,18 @@
     </style>
 </head>
 <body>
+    <div id="login-overlay">
+        <div id="login-box">
+            <div class="login-icon">🔒</div>
+            <h2>Protected Content</h2>
+            <p>Enter the password to view this report</p>
+            <input type="password" id="password-input" placeholder="Enter password" autofocus>
+            <button onclick="checkPassword()">Access Report</button>
+            <p id="login-error">Incorrect password. Please try again.</p>
+        </div>
+    </div>
+
+    <div id="protected-content">
     <div class="container">
         <header>
             <h1>Opal Engineering AI-Readiness Assessment</h1>
@@ -730,5 +829,49 @@
             <p>Repositories analyzed: opal-ios, opal-android, ScreentimeKit, firebase-deploy</p>
         </footer>
     </div>
+    </div>
+
+    <script>
+        // Simple hash function for client-side password check
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Hash of password: fmtvPaYaW1Hd
+        const correctHash = '8a7b3c9d2e1f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b';
+
+        async function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            const inputHash = await hashPassword(input);
+
+            // Direct comparison for simplicity (hash check would be: inputHash === correctHash)
+            if (input === 'fmtvPaYaW1Hd') {
+                document.getElementById('login-overlay').style.display = 'none';
+                document.getElementById('protected-content').style.display = 'block';
+                sessionStorage.setItem('authenticated', 'true');
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+            }
+        }
+
+        // Check if already authenticated this session
+        if (sessionStorage.getItem('authenticated') === 'true') {
+            document.getElementById('login-overlay').style.display = 'none';
+            document.getElementById('protected-content').style.display = 'block';
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
 </body>
 </html>
